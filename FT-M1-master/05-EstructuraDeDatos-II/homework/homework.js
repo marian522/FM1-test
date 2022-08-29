@@ -85,7 +85,37 @@ La clase debe tener los siguientes métodos:
 Ejemplo: supongamos que quiero guardar {instructora: 'Ani'} en la tabla. Primero puedo chequear, con hasKey, si ya hay algo en la tabla con el nombre 'instructora'; luego, invocando set('instructora', 'Ani'), se almacenará el par clave-valor en un bucket específico (determinado al hashear la clave)
 */
 
-function HashTable() {}
+function HashTable() {
+  this.numBuckets = 35;
+  this.buckets = [];
+}
+
+HashTable.prototype.hash = function(key){
+  var acum = 0;
+  for (var i= 0; i< key.length; i++){
+    acum = acum + key.charCodeAt (i);
+  }
+return acum % this.numBuckets;
+}
+
+HashTable.prototype.set = function (key, value){
+  if ( typeof key !== 'string') throw TypeError('Keys must be strings');
+  var index = this.hash (key);
+  if ( !this.buckets[index]){
+    this.buckets [index] = [];
+  }
+  this.buckets [index][key] = value; 
+}
+
+HashTable.prototype.get = function (key){
+  var index = this.hash (key);
+  return this.buckets [index][key];
+}
+
+HashTable.prototype.hasKey = function (key){
+  var index = this.hash(key);
+  return this.buckets[index].hasOwnProperty (key);
+}
 
 // No modifiquen nada debajo de esta linea
 // --------------------------------
